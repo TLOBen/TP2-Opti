@@ -1,13 +1,14 @@
-package fr.uqac;
+package fr.uqac.algo;
 
-import fr.uqac.util.FlowShopInfo;
+import fr.uqac.struct.FlowShopInfo;
+import fr.uqac.struct.Result;
 
 /**
  *
  * @author Julien CUSSET, Benjamin DAGOURET
  */
 public class Johnson {
-    public int[] johnsonMethod(FlowShopInfo fsi) {
+    public Result johnsonMethod(FlowShopInfo fsi) {
         int[] schedule = new int[fsi.jobs];
         int indexScheduleStart = 0;
         int indexScheduleEnd = fsi.jobs - 1;
@@ -36,7 +37,9 @@ public class Johnson {
             }
         }
         
-        return schedule;
+        Result result = new Result();        
+        
+        return result.convertToArrayList(schedule);
     }
     
     private boolean contains(int[] schedule, int job) {

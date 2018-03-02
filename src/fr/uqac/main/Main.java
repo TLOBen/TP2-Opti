@@ -3,8 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package fr.uqac;
+package fr.uqac.main;
 
+import fr.uqac.algo.CDS;
+import fr.uqac.algo.Gupta;
+import fr.uqac.algo.Palmer;
+import fr.uqac.algo.sep.SEP;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,11 +22,13 @@ public class Main {
         Gupta gupta = new Gupta();
         Palmer palmer = new Palmer();
         CDS cds = new CDS();
+        SEP sep = new SEP();
         
         try {
-            //gupta.compute();
             //palmer.compute();
-            cds.compute();
+            //gupta.compute();
+            //cds.compute();
+            sep.compute();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }

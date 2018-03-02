@@ -1,5 +1,7 @@
 package fr.uqac.util;
 
+import fr.uqac.struct.FlowShopInfo;
+import fr.uqac.struct.Result;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import javafx.util.Pair;
@@ -12,42 +14,38 @@ public class Sorter {
     public void compute() throws FileNotFoundException {
         Display display = new Display();
         TxtFileReader tfr = new TxtFileReader();
-        ArrayList<FlowShopInfo> fsiList = tfr.readFile("C:/Users/Benjamin/Downloads/tai100_20.txt", 2);
+        ArrayList<FlowShopInfo> fsiList = tfr.readFile("C:/Users/Benjamin/Downloads/tai20_5.txt", 2);
         
         for (int i=0; i<2; i++) {
             FlowShopInfo fsi = fsiList.get(i);
-            ArrayList<Pair<Integer, Double>> classement = sort(fsi);
+            Result classement = sort(fsi);
             int makespan = calculateMakespan(classement, fsi);
             
             display.displayResult(classement, makespan);
         }
     }
     
-    public ArrayList<Pair<Integer, Double>> sort(FlowShopInfo fsi) {
-        ArrayList<Pair<Integer, Double>> classement = new ArrayList();
+    public Result sort(FlowShopInfo fsi) {
+        Result classement = new Result();
         
         for (int j=0; j<fsi.jobs; j++) {
             Pair paire = new Pair(j, calculP(fsi, j));
-            classement.add(paire);
+            classement.add(j, calculP(fsi, j));
         }
         
-        classement.sort((Pair<Integer, Double> p1, Pair<Integer, Double> p2) -> {
-            Double a = p1.getValue();
-            Double b = p2.getValue();
-            return b.compareTo(a);
-        });
+        classement.sort();
         
         return classement;
     }
     
-    public int calculateMakespan(ArrayList<Pair<Integer, Double>> classement, FlowShopInfo fsi) {
+    public int calculateMakespan(Result result, FlowShopInfo fsi) {
         int[] makespanPerMachine = new int[fsi.machines];
         
         for (int i=0; i<fsi.machines; i++) {
             makespanPerMachine[i] = 0;
         }
         
-        for (int i=0; i<classement.size(); i++) {
+        for (int i=0; i<result.size(); i++) {
             for (int j=0; j<fsi.machines; j++) {
                 if (j != 0) {
                     if (makespanPerMachine[j-1] > makespanPerMachine[j]) {
@@ -55,7 +53,7 @@ public class Sorter {
                     }
                 }
                 
-                makespanPerMachine[j] += fsi.getProcessingTimes(j, classement.get(i).getKey());
+                makespanPerMachine[j] += fsi.getProcessingTimes(j, result.getKey(i));
             }
         }
         

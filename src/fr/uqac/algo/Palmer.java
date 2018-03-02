@@ -1,6 +1,6 @@
-package fr.uqac;
+package fr.uqac.algo;
 
-import fr.uqac.util.FlowShopInfo;
+import fr.uqac.struct.FlowShopInfo;
 import fr.uqac.util.Sorter;
 
 /**

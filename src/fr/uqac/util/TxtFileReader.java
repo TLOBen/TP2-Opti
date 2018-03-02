@@ -1,5 +1,6 @@
 package fr.uqac.util;
 
+import fr.uqac.struct.FlowShopInfo;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -32,8 +33,7 @@ public class TxtFileReader {
             
             // On ne lit que les deux premières instances
             for (int i=0; i<instanceNumber; i++) {
-                // Nouvelle instance
-                FlowShopInfo fsi = new FlowShopInfo();
+                Integer jobs=0, machines=0;
                 
                 // On passe la première ligne
                 bufferedReader.readLine();
@@ -41,14 +41,23 @@ public class TxtFileReader {
                 // Ligne avec le nombre de jobs, machines, ...
                 if((line = bufferedReader.readLine()) != null) {
                     scanner = new Scanner(line);
-
+                    
                     for (int j=0; j<5 && scanner.hasNextInt(); j++) {
-                        fsi.addInfo(j, scanner.nextInt());
+                        if (j==0) {
+                            jobs = scanner.nextInt();
+                        } else if (j==1) {
+                            machines = scanner.nextInt();
+                        } else {
+                            scanner.nextInt();
+                        }
                     }
                 }
                 
                 // On passe la ligne suivante
                 bufferedReader.readLine();
+                
+                // Nouvelle instance
+                FlowShopInfo fsi = new FlowShopInfo(jobs, machines);
                 
                 // On lit le nombre de lignes correspondant au nombre de machines
                 for (int j=0; j<fsi.machines; j++) {
