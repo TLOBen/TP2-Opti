@@ -1,0 +1,44 @@
+set OBJECTS := a b c d e f g h i j;
+
+param: weight :=
+   a       55
+   b       50
+   c       40
+   d       35
+   e       30
+   f       30
+   g       15
+   h       15
+   i       10
+   j        5
+;
+
+param: volume :=
+   a        3
+   b        3
+   c        3
+   d        2
+   e        2
+   f        2
+   g        2
+   h        1
+   i        1
+   j        1
+;
+
+param: value :=
+   a    1000
+   b     800
+   c     750
+   d     700
+   e     600
+   f     550
+   g     250
+   h     200
+   i     200
+   j     150
+;
+
+param knapsackSize = 50;
+param knapsackVolume = 4;
+param knapsacks = 2;

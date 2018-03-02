@@ -27,45 +27,44 @@ public class SEP extends Sorter {
         this.classementFinal = solutionInitiale();
         sep();
         
-        for (int i=0; i<classementFinal.sequence.size(); i++) {
-            System.out.println(classementFinal.sequence.get(i));
-        }
-        
-        return new Result();
+        return createTempResult(this.classementFinal.sequence);
     }
     
-    public Result sep() {
+    public void sep() {
         boolean cont = true;
         
         while(cont) {
-            System.out.println(this.currentNode.sequence.size() + " " + this.currentNode.makespan + " " + this.classementFinal.makespan);
-            
-            if (this.currentNode.sequence.size() == this.fsi.jobs) {
-                this.classementFinal = this.currentNode;
-            } else {
+            if (this.currentNode.sequence.size() == this.fsi.jobs && this.currentNode.makespan < this.classementFinal.makespan) {
+                this.classementFinal = new Node();
+                this.classementFinal.sequence = (ArrayList<Integer>) this.currentNode.sequence.clone();
+                this.classementFinal.makespan = this.currentNode.makespan;
+                
+                removeGreaterClosedNode();
+            } else {                
                 for (int i=0; i<this.fsi.jobs; i++) {
                     if(!contains(this.currentNode.sequence, i)) {
                         Node newSequence = new Node();
                         newSequence.sequence = (ArrayList<Integer>) this.currentNode.sequence.clone();
                         newSequence.addSequence(i);
-
-                        addSequenceClosed(newSequence);
+                        newSequence.makespan = calculateMakespan(newSequence.sequence);
+                        
+                        if(newSequence.makespan < this.classementFinal.makespan) {
+                            addSequenceClosed(newSequence);
+                        }
                     }
                 }
+            }
 
-                if (this.closedSet.size() > 0) {
-                    if (this.classementFinal.makespan > this.closedSet.get(0).makespan) {
-                        this.currentNode = this.closedSet.remove(0);
-                    } else {
-                        cont = false;
-                    }
+            if (this.closedSet.size() > 0) {
+                if (this.classementFinal.makespan > this.closedSet.get(0).makespan) {
+                    this.currentNode = this.closedSet.remove(0);
                 } else {
                     cont = false;
                 }
+            } else {
+                cont = false;
             }
         }
-        
-        return new Result();
     }
     
     public void addSequenceClosed(Node sequence) {
@@ -128,24 +127,24 @@ public class SEP extends Sorter {
         Result result = new Result();
         
         for (int i=0; i<sequence.size(); i++) {
-            result.add(i, 0.0);
+            result.add(sequence.get(i), 0.0);
         }
         
         return result;
     }
     
     public FlowShopInfo createTempFsi(ArrayList<Integer> sequence, FlowShopInfo fsi, int machines) {
-        FlowShopInfo tempFsi = new FlowShopInfo(sequence.size(), machines);
+        FlowShopInfo tempFsi = new FlowShopInfo(fsi.jobs, machines);
+        
+        for (int i=0; i<tempFsi.machines; i++) {            
+            for (int j=0; j<fsi.jobs; j++) {
+                int processingTime = 0;
                 
-        for (int i=0; i<tempFsi.machines; i++) {
-            int index = 0;
-            
-            for (int j=0; j<fsi.jobs; j++) {                
                 if (contains(sequence, j)) {
-                    int processingTime = fsi.getProcessingTimes(i, j);
-                    tempFsi.addProcessingTimes(i, index, processingTime);
-                    index++;
+                    processingTime = fsi.getProcessingTimes(i, j);
                 }
+                
+                tempFsi.addProcessingTimes(i, j, processingTime);
             }
         }
         
@@ -153,11 +152,7 @@ public class SEP extends Sorter {
     }
     
     public boolean contains(ArrayList<Integer> sequence, int job) {
-        if (sequence.contains(job)) {
-            return true;
-        } else {
-            return false;
-        }
+        return sequence.contains(job);
     }
     
     public Node solutionInitiale() {
@@ -169,5 +164,17 @@ public class SEP extends Sorter {
         solution.makespan = calculateMakespan(solution.sequence);
         
         return solution;
+    }
+    
+    public void removeGreaterClosedNode() {
+        ArrayList<Node> newClosedSet = new ArrayList();
+        
+        this.closedSet.forEach((set) ->{
+            if (set.makespan < this.classementFinal.makespan) {
+                newClosedSet.add(set);
+            }
+        });
+        
+        this.closedSet = newClosedSet;
     }
 }

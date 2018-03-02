@@ -1,0 +1,9 @@
+reset ;
+model 3-d.mod ;
+data 3-d.dat ;
+option solver CPLEX ;
+solve ;
+# show objective value
+display _obj ;
+# show variable value , reduced cost
+display _varname , _var , _var .rc ;
