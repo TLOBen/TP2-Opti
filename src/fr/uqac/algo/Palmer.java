@@ -4,10 +4,20 @@ import fr.uqac.struct.FlowShopInfo;
 import fr.uqac.util.Sorter;
 
 /**
- *
- * @author Benjamin
+ * Classe pour la méthode Palmer
+ * 
+ * @author Julien CUSSET, Benjamin DAGOURET
  */
-public class Palmer extends Sorter {    
+public class Palmer extends Sorter {
+    /**
+     * Constructor
+     * 
+     * @param fileName Le fichier à lire
+     */
+    public Palmer(String fileName) {
+        this.fileName = fileName;
+    }
+    
     @Override
     public double calculP(FlowShopInfo fsi, int job) {
         int p = 0;

@@ -4,10 +4,20 @@ import fr.uqac.struct.FlowShopInfo;
 import fr.uqac.util.Sorter;
 
 /**
- *
- * @author Benjamin
+ * Classe pour la méthode GUPTA
+ * 
+ * @author Julien CUSSET, Benjamin DAGOURET
  */
-public class Gupta extends Sorter {    
+public class Gupta extends Sorter {
+    /**
+     * Constructor
+     * 
+     * @param fileName Le fichier à lire
+     */
+    public Gupta(String fileName) {
+        this.fileName = fileName;
+    }
+    
     @Override
     public double calculP(FlowShopInfo fsi, int job) {
         double e;

@@ -7,16 +7,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
- * @author Benjamin
+ * Classe pour la méthode SEP
+ * 
+ * @author Julien CUSSET, Benjamin DAGOURET
  */
 public class SEP extends Sorter {
+    /**
+     * La liste des séquences à parcourir
+     */
     private List<Node> closedSet;
+    
+    /**
+     * Les données du fichier d'entrée
+     */
     private FlowShopInfo fsi;
+    
+    /**
+     * Le noeud actuellement utilisé
+     */
     private Node currentNode;
+    
+    /**
+     * La solution provisoire qui deviendra finale
+     */
     private Node classementFinal;
     
-    public SEP() {
+    /**
+     * Constructeur
+     */
+    public SEP(String fileName) {
+        this.fileName = fileName;
         this.closedSet = new ArrayList();
         this.currentNode = new Node();
     }
@@ -30,6 +50,26 @@ public class SEP extends Sorter {
         return createTempResult(this.classementFinal.sequence);
     }
     
+    @Override
+    public String createStringResult(Result result, int makespan) {
+        String resultString = new String();
+        resultString = resultString + "+-----+\n";
+        resultString = resultString + "| job |\n";
+        resultString = resultString + "+-----+\n";
+        
+        for(int i=0; i<result.size(); i++) {
+            resultString = resultString + String.format("| %3d |%n", result.getKey(i));
+        }
+
+        resultString = resultString + "+-----+\n";
+        resultString = resultString + "Makespan = " + makespan + "\n";
+        
+        return resultString;
+    }
+    
+    /**
+     * Méthode SEP
+     */
     public void sep() {
         boolean cont = true;
         
@@ -67,6 +107,11 @@ public class SEP extends Sorter {
         }
     }
     
+    /**
+     * Ajoute une séquence aux tableau de séquences à parcourir
+     * 
+     * @param sequence Une séquence de jobs
+     */
     public void addSequenceClosed(Node sequence) {
         sequence.makespan = this.calculateMakespan(sequence.sequence);
                     
@@ -81,6 +126,12 @@ public class SEP extends Sorter {
         this.closedSet.add(sequence);
     }
     
+    /**
+     * Calcule le makespan d'une séquence
+     * 
+     * @param sequence Une séquence de jobs
+     * @return Le makespan de la séquence
+     */
     public int calculateMakespan(ArrayList<Integer> sequence) {
         int makespan = 0;
         
@@ -123,6 +174,12 @@ public class SEP extends Sorter {
         return makespan;
     }
     
+    /**
+     * Créée un résultat temporaire en fonction d'une séquence
+     * 
+     * @param sequence Une séquence de jobs
+     * @return Un objet Result
+     */
     public Result createTempResult(ArrayList<Integer> sequence) {
         Result result = new Result();
         
@@ -133,6 +190,15 @@ public class SEP extends Sorter {
         return result;
     }
     
+    /**
+     * Créée un nouveau objet FlowShopInfo à partir de celuilu à partir
+     * du fichier et d'une séquence
+     * 
+     * @param sequence Une séquence de jobs
+     * @param fsi Les données du fichier d'entrée
+     * @param machines Le nombre de machines
+     * @return Un nouveau FlowShopInfo
+     */
     public FlowShopInfo createTempFsi(ArrayList<Integer> sequence, FlowShopInfo fsi, int machines) {
         FlowShopInfo tempFsi = new FlowShopInfo(fsi.jobs, machines);
         
@@ -151,10 +217,22 @@ public class SEP extends Sorter {
         return tempFsi;
     }
     
+    /**
+     * Vérifie si un job apartient à une séquence
+     * 
+     * @param sequence Une séquence de jobs
+     * @param job Un job
+     * @return vrai si le job est contenu dans la séquence, sinon faux
+     */
     public boolean contains(ArrayList<Integer> sequence, int job) {
         return sequence.contains(job);
     }
     
+    /**
+     * Créée une solution initiale en prenant les jobs de 1 à n
+     * 
+     * @return Un noeud contenant une solution initiale
+     */
     public Node solutionInitiale() {
         Node solution = new Node();
         
@@ -166,6 +244,9 @@ public class SEP extends Sorter {
         return solution;
     }
     
+    /**
+     * Suprime les noeuds ayant un makespan plus grand que le résultat provisoires
+     */
     public void removeGreaterClosedNode() {
         ArrayList<Node> newClosedSet = new ArrayList();
         
