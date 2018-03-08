@@ -28,8 +28,15 @@ public class Gupta extends Sorter {
             e = -1;
         }
         
-        double minP1 = fsi.getProcessingTimes(0, job) + fsi.getProcessingTimes(1, job);
-        double minP2 = fsi.getProcessingTimes(fsi.machines - 2, job) + fsi.getProcessingTimes(fsi.machines - 1, job);
+        double minP1 = 0;
+        for(int i=0; i<fsi.machines-1; i++) {
+            minP1 += fsi.getProcessingTimes(i, job);
+        }
+        
+        double minP2 = 0;
+        for(int i=1; i<fsi.machines; i++) {
+            minP2 += fsi.getProcessingTimes(i, job);
+        }
         
         return e / Double.min(minP1, minP2);
     }
